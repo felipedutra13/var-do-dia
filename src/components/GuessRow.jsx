@@ -1,8 +1,10 @@
 import { ArrowUp, ArrowDown } from 'lucide-react';
 import clsx from 'clsx';
 
-export default function GuessRow({ guess, isHeader = false }) {
+export default function GuessRow({ guess, isHeader = false, simpleMode = false }) {
   if (isHeader) {
+    if (simpleMode) return null; // No header needed for simple mode
+
     return (
       <div className="flex w-full max-w-2xl mx-auto gap-1 sm:gap-2 mb-2 pb-2 border-b border-zinc-800 text-[10px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider text-center">
         <div className="w-16 sm:w-20 shrink-0">Jogador</div>
@@ -22,6 +24,27 @@ export default function GuessRow({ guess, isHeader = false }) {
   };
 
   const animationClass = "animate-[flipIn_0.6s_ease-out_forwards] origin-center opacity-0";
+
+  if (simpleMode) {
+    // In career mode, we only care if it's the exact player or not
+    // The target player check is outside, but here we can just check if ALL are correct, or pass an explicit 'isCorrect' flag.
+    // Actually, we can check if it's fully correct by checking the `time`, `liga`, `nacionalidade` etc, or maybe just `guess.player.ID === targetPlayer.ID` but we don't have targetPlayer.
+    // However, if the guess is the target player, the gameStatus would become WON and the last guess is correct.
+    // Let's assume if it's the target player, we highlight it green, else red.
+    const isCorrect = nacionalidade === 'correct' && liga === 'correct' && time === 'correct' && posicao === 'correct' && idade.status === 'correct';
+    
+    return (
+      <div className="flex w-full max-w-2xl mx-auto mb-2 text-sm sm:text-base text-center">
+        <div className={clsx("w-full flex items-center justify-between border rounded-lg shadow-sm px-4 py-3 sm:py-4", isCorrect ? "bg-emerald-900/60 border-emerald-500/50 text-white" : "bg-rose-950/40 border-rose-900/30 text-zinc-300", animationClass)} style={{ animationDelay: '0ms' }}>
+          <div className="flex items-center gap-3">
+            <img src={player.card} alt={player.Name} className="w-8 sm:w-10 h-8 sm:h-10 object-contain" />
+            <span className="font-bold">{player.Name}</span>
+          </div>
+          <span className="font-bold">{isCorrect ? 'Correto!' : 'Incorreto'}</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex w-full max-w-2xl mx-auto gap-1 sm:gap-2 mb-2 text-xs sm:text-sm text-center">

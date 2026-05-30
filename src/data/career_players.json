@@ -1,0 +1,29 @@
+[
+  {
+    "ID": 212198,
+    "name": "Bruno Fernandes",
+    "career": [
+      {
+        "team": "Novara",
+        "logo": "/logos/novara.png"
+      },
+      {
+        "team": "Udinese",
+        "logo": "/logos/udinese.png"
+      },
+      {
+        "team": "Sampdoria",
+        "logo": "/logos/sampdoria.png"
+      },
+      {
+        "team": "Sporting CP",
+        "logo": "/logos/sporting.png"
+      },
+      {
+        "team": "Manchester United",
+        "logo": "/logos/man-united.png"
+      }
+    ],
+    "startFrom": "former"
+  }
+]
