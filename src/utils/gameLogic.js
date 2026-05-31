@@ -11,18 +11,18 @@ const seededRandom = (seed) => {
 
 export const getDailyPlayer = () => {
   const today = new Date();
-  const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}-v4-SaltDoVarDoDia!`;
+  const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}-v5-SaltDoVarDoDia!`;
   
   const randomValue = seededRandom(dateString);
-  const top100Players = players.filter(p => p.Rank <= 100);
-  const index = Math.floor(randomValue * top100Players.length);
+  const top200Players = players.filter(p => p.Rank <= 200);
+  const index = Math.floor(randomValue * top200Players.length);
   
-  return top100Players[index];
+  return top200Players[index];
 };
 
 export const getDailyCareerPlayer = () => {
   const today = new Date();
-  const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}-v4-CareerSalt!`;
+  const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}-v5-CareerSalt!`;
   
   const randomValue = seededRandom(dateString);
   const index = Math.floor(randomValue * careerPlayers.length);
@@ -59,7 +59,7 @@ export const evaluateGuess = (guess, target) => {
 
 export const getGameState = () => {
   const today = new Date();
-  const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}-v4-SaltDoVarDoDia!`;
+  const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}-v5-SaltDoVarDoDia!`;
   
   const savedState = localStorage.getItem('varDoDiaGameState');
   if (savedState) {
@@ -114,7 +114,7 @@ export const updateStatsOnEnd = (won) => {
 
 export const getCareerGameState = () => {
   const today = new Date();
-  const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}-v4-CareerSalt!`;
+  const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}-v5-CareerSalt!`;
   
   const savedState = localStorage.getItem('varDoDiaCareerGameState');
   if (savedState) {

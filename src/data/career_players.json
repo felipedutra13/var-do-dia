@@ -25,5 +25,47 @@
       }
     ],
     "startFrom": "former"
+  },
+  {
+    "ID": 246191,
+    "name": "Julián Alvarez",
+    "career": [
+      {
+        "team": "River Plate",
+        "logo": "/logos/river-plate.png"
+      },
+      {
+        "team": "Manchester City",
+        "logo": "/logos/man-city.png"
+      },
+      {
+        "team": "Atlético Madrid",
+        "logo": "/logos/atletico-madrid.png"
+      }
+    ],
+    "startFrom": "current"
+  },
+  {
+    "ID": 205452,
+    "name": "Antonio Rüdiger",
+    "career": [
+      {
+        "team": "Stuttgart",
+        "logo": "/logos/stuttgart.png"
+      },
+      {
+        "team": "Roma",
+        "logo": "/logos/roma.png"
+      },
+      {
+        "team": "Chelsea",
+        "logo": "/logos/chelsea.png"
+      },
+      {
+        "team": "Real Madrid",
+        "logo": "/logos/real-madrid.png"
+      }
+    ],
+    "startFrom": "former"
   }
 ]

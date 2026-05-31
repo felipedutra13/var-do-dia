@@ -1,17 +1,23 @@
 import React from 'react';
-import { ArrowRight, ArrowLeft } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import clsx from 'clsx';
 
 function CareerTrajectory({ career, guessesCount, careerDirection }) {
   if (!career || career.length === 0) return null;
 
-  const displayedCareer = careerDirection === 'backward' ? [...career].reverse() : career;
-  const totalClubs = displayedCareer.length;
+  // Always display left→right (earliest → latest)
+  const totalClubs = career.length;
   const revealedCount = Math.min(1 + guessesCount, totalClubs);
+
   const checkRevealed = (index) => {
-    // In both directions, reveal from start of displayedCareer array
+    if (careerDirection === 'backward') {
+      // Reveal from the right (current club first)
+      return index >= totalClubs - revealedCount;
+    }
+    // Reveal from the left (first club first)
     return index < revealedCount;
   };
+
   return (
     <div className="w-full max-w-2xl mx-auto mb-6 p-4 bg-zinc-900/40 rounded-xl border border-zinc-800/60 shadow-inner">
       <div className="flex items-center justify-between mb-4">
@@ -27,7 +33,7 @@ function CareerTrajectory({ career, guessesCount, careerDirection }) {
         'flex flex-wrap items-center justify-center gap-3 sm:gap-4 relative',
         'flex-row'
       )}>
-        {displayedCareer.map((club, index) => {
+        {career.map((club, index) => {
           const isRevealed = checkRevealed(index);
           return (
             <React.Fragment key={`${club.team}-${index}`}>
@@ -54,11 +60,7 @@ function CareerTrajectory({ career, guessesCount, careerDirection }) {
               </div>
 
                 {index < totalClubs - 1 && (
-                  careerDirection === 'forward' ? (
-                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-700" />
-                  ) : (
-                    <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-700" />
-                  )
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-700" />
                 )}
             </React.Fragment>
           );
@@ -67,8 +69,8 @@ function CareerTrajectory({ career, guessesCount, careerDirection }) {
 
       <p className="text-center text-xs text-zinc-500 mt-4">
         {careerDirection === 'forward'
-          ? 'Mostrando a partir do primeiro clube da carreira.'
-          : 'Mostrando a partir do clube mais recente.'}
+          ? 'Revelando a partir do primeiro clube.'
+          : 'Revelando a partir do clube atual.'}
       </p>
     </div>
   );

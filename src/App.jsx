@@ -30,7 +30,7 @@ function App() {
       target = getDailyCareerPlayer();
       state = getCareerGameState();
       currentStats = getCareerStats();
-      setCareerDirection(target.startFrom === 'current' ? 'backward' : 'forward');
+      setCareerDirection(target.careerDirection);
     }
     
     setTargetPlayer(target);
