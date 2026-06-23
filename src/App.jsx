@@ -7,6 +7,7 @@ import InfoModal from './components/InfoModal';
 import { Trophy, Info, Route, Target } from 'lucide-react';
 import CareerTrajectory from './components/CareerTrajectory';
 import clsx from 'clsx';
+import { Analytics } from '@vercel/analytics/react';
 
 const MAX_GUESSES = 6;
 
@@ -199,6 +200,7 @@ function App() {
       {showInfoModal && (
         <InfoModal gameMode={gameMode} onClose={() => setShowInfoModal(false)} />
       )}
+      <Analytics />
     </div>
   );
 }
