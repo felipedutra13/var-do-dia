@@ -10,6 +10,7 @@ import clsx from 'clsx';
 const MAX_GUESSES = 6;
 
 function App() {
+  const [mode, setMode] = useState('mundial');
   const [targetPlayer, setTargetPlayer] = useState(null);
   const [gameState, setGameState] = useState(null);
   const [stats, setStats] = useState({ played: 0, won: 0, currentStreak: 0, maxStreak: 0 });
@@ -18,20 +19,20 @@ function App() {
 
   useEffect(() => {
     // Initialize game
-    const dailyTarget = getDailyPlayer();
+    const dailyTarget = getDailyPlayer(mode);
     setTargetPlayer(dailyTarget);
     
-    const savedState = getGameState();
+    const savedState = getGameState(mode);
     setGameState(savedState);
     
-    const savedStats = getStats();
+    const savedStats = getStats(mode);
     setStats(savedStats);
 
     // If game is already over on load, show modal after a small delay
     if (savedState && savedState.gameStatus !== 'IN_PROGRESS') {
       setTimeout(() => setShowShareModal(true), 500);
     }
-  }, []);
+  }, [mode]);
 
   const handleGuess = (player) => {
     if (!gameState || gameState.gameStatus !== 'IN_PROGRESS') return;
@@ -41,7 +42,7 @@ function App() {
       return; // Could show a toast here
     }
 
-    const evaluation = evaluateGuess(player, targetPlayer);
+    const evaluation = evaluateGuess(player, targetPlayer, mode);
     const newGuesses = [...gameState.guesses, evaluation];
     
     let newStatus = 'IN_PROGRESS';
@@ -61,11 +62,11 @@ function App() {
     };
 
     setGameState(newState);
-    saveGameState(newState);
+    saveGameState(newState, mode);
 
     if (newStatus !== 'IN_PROGRESS') {
-      updateStatsOnEnd(won);
-      setStats(getStats());
+      updateStatsOnEnd(won, mode);
+      setStats(getStats(mode));
       setTimeout(() => setShowShareModal(true), 1500); // Wait for animations
     }
   };
@@ -77,7 +78,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-zinc-950 flex flex-col items-center py-8 px-4 sm:px-6">
-      <header className="w-full max-w-2xl mb-8 flex items-center justify-between">
+      <header className="w-full max-w-2xl mb-6 flex items-center justify-between">
         <button onClick={() => setShowInfoModal(true)} className="p-2 text-zinc-400 hover:text-white transition-colors">
           <Info className="w-6 h-6" />
         </button>
@@ -89,6 +90,21 @@ function App() {
           <span>{stats.currentStreak}</span>
         </div>
       </header>
+
+      <div className="flex justify-center mb-8 gap-2 w-full max-w-2xl">
+        <button 
+          onClick={() => setMode('mundial')}
+          className={clsx("px-4 py-2 rounded-lg font-bold text-sm transition-colors", mode === 'mundial' ? "bg-emerald-500 text-zinc-950" : "bg-zinc-800 text-zinc-400 hover:text-white")}
+        >
+          Mundial
+        </button>
+        <button 
+          onClick={() => setMode('brasileirao')}
+          className={clsx("px-4 py-2 rounded-lg font-bold text-sm transition-colors", mode === 'brasileirao' ? "bg-emerald-500 text-zinc-950" : "bg-zinc-800 text-zinc-400 hover:text-white")}
+        >
+          Brasileirão (Beta)
+        </button>
+      </div>
 
       <main className="w-full max-w-2xl flex-1 flex flex-col">
         {/* Search Area */}
@@ -102,7 +118,7 @@ function App() {
             </button>
           ) : (
             <div className="flex flex-col items-center">
-              <SearchInput onSelect={handleGuess} disabled={isGameOver} />
+              <SearchInput onSelect={handleGuess} disabled={isGameOver} mode={mode} />
               <p className="mt-3 text-sm text-zinc-500 font-medium">
                 Tentativas restantes: <span className={clsx("font-bold", remainingGuesses <= 2 ? "text-rose-400" : "text-zinc-300")}>{remainingGuesses}</span> de {MAX_GUESSES}
               </p>
@@ -112,10 +128,10 @@ function App() {
 
         {/* Guesses Container */}
         <div className="w-full flex-1 flex flex-col gap-1">
-          {gameState.guesses.length > 0 && <GuessRow isHeader />}
+          {gameState.guesses.length > 0 && <GuessRow isHeader mode={mode} />}
           
           {gameState.guesses.map((guess, index) => (
-            <GuessRow key={index} guess={guess} />
+            <GuessRow key={index} guess={guess} mode={mode} />
           ))}
 
           {/* Empty placeholders for remaining guesses */}

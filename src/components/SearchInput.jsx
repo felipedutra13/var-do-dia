@@ -7,13 +7,13 @@ const normalizeString = (str) => {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 };
 
-export default function SearchInput({ onSelect, disabled }) {
+export default function SearchInput({ onSelect, disabled, mode }) {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef(null);
 
-  const players = getAllPlayers();
+  const players = getAllPlayers(mode);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -77,7 +77,9 @@ export default function SearchInput({ onSelect, disabled }) {
               <img src={player.card} alt={player.Name} className="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded bg-zinc-800" />
               <div className="flex flex-col">
                 <span className="font-medium">{player.Name}</span>
-                <span className="text-xs text-zinc-400">{player.Team} • {player.League}</span>
+                <span className="text-xs text-zinc-400">
+                  {player.Team} • {mode === 'brasileirao' ? player.State : player.League}
+                </span>
               </div>
             </li>
           ))}

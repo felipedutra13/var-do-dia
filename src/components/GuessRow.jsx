@@ -1,13 +1,13 @@
 import { ArrowUp, ArrowDown } from 'lucide-react';
 import clsx from 'clsx';
 
-export default function GuessRow({ guess, isHeader = false }) {
+export default function GuessRow({ guess, isHeader = false, mode }) {
   if (isHeader) {
     return (
       <div className="flex w-full max-w-2xl mx-auto gap-1 sm:gap-2 mb-2 pb-2 border-b border-zinc-800 text-[10px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider text-center">
         <div className="w-16 sm:w-20 shrink-0">Jogador</div>
         <div className="flex-1 min-w-0">Nac.</div>
-        <div className="flex-1 min-w-0">Liga</div>
+        <div className="flex-1 min-w-0">{mode === 'brasileirao' ? 'Estado' : 'Liga'}</div>
         <div className="flex-1 min-w-0">Time</div>
         <div className="flex-1 min-w-0">Pos.</div>
         <div className="flex-1 min-w-0">Idade</div>
@@ -35,7 +35,9 @@ export default function GuessRow({ guess, isHeader = false }) {
       </div>
 
       <div className={clsx("flex-1 min-w-0 h-16 sm:h-20 flex items-center justify-center border rounded shadow-sm px-1", getBgClass(liga), animationClass)} style={{ animationDelay: '400ms' }}>
-        <span className="truncate w-full text-[10px] sm:text-xs leading-tight line-clamp-2">{player.League}</span>
+        <span className="truncate w-full text-[10px] sm:text-xs leading-tight line-clamp-2">
+          {mode === 'brasileirao' ? player.State : player.League}
+        </span>
       </div>
 
       <div className={clsx("flex-1 min-w-0 h-16 sm:h-20 flex items-center justify-center border rounded shadow-sm px-1", getBgClass(time), animationClass)} style={{ animationDelay: '600ms' }}>
