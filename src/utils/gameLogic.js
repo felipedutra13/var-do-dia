@@ -1,5 +1,6 @@
 import players from '../data/players.json';
 import brazillianPlayers from '../data/brazillian_players.json';
+import careerPlayers from '../data/career_players.json';
 
 // Utility to generate a pseudo-random number from a string
 const seededRandom = (seed) => {
@@ -11,24 +12,43 @@ const seededRandom = (seed) => {
 
 export const getDailyPlayer = (mode = 'mundial') => {
   const today = new Date();
-  
+
   if (mode === 'brasileirao') {
     // Sequential selection logic starting from June 22, 2026
     const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
     const startMidnight = new Date(2026, 5, 22).getTime(); // Note: Month is 0-indexed (5 = June)
-    
+
     let diffDays = Math.floor((todayMidnight - startMidnight) / (1000 * 60 * 60 * 24));
     if (diffDays < 0) diffDays = 0;
-    
+
     const index = diffDays % brazillianPlayers.length;
     return brazillianPlayers[index];
   } else {
-    const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}-v4-SaltDoVarDoDia!`;
+    const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}-v5-SaltDoVarDoDia!`;
     const randomValue = seededRandom(dateString);
-    const top100Players = players.filter(p => p.Rank <= 100);
-    const index = Math.floor(randomValue * top100Players.length);
-    return top100Players[index];
+    const top200Players = players.filter(p => p.Rank <= 200);
+    const index = Math.floor(randomValue * top200Players.length);
+    return top200Players[index];
   }
+};
+
+export const getDailyCareerPlayer = () => {
+  const today = new Date();
+  const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}-v5-CareerSalt!`;
+
+  const randomValue = seededRandom(dateString);
+  const index = Math.floor(randomValue * careerPlayers.length);
+  const careerPlayer = careerPlayers[index];
+
+  const fullPlayer = players.find(p => p.ID === careerPlayer.ID);
+
+  const direction = careerPlayer.startFrom === 'current' ? 'backward' : 'forward';
+
+  return {
+    ...fullPlayer,
+    career: careerPlayer.career,
+    careerDirection: direction
+  };
 };
 
 export const getAllPlayers = (mode = 'mundial') => {
@@ -56,8 +76,8 @@ const getStatsKey = (mode) => `varDoDiaStats${mode === 'brasileirao' ? '_br' : '
 
 export const getGameState = (mode = 'mundial') => {
   const today = new Date();
-  const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}-v4-SaltDoVarDoDia!`;
-  
+  const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}-v5-SaltDoVarDoDia!`;
+
   const savedState = localStorage.getItem(getGameStateKey(mode));
   if (savedState) {
     const parsedState = JSON.parse(savedState);
@@ -65,7 +85,7 @@ export const getGameState = (mode = 'mundial') => {
       return parsedState;
     }
   }
-  
+
   return {
     date: dateString,
     guesses: [],
@@ -107,4 +127,59 @@ export const updateStatsOnEnd = (won, mode = 'mundial') => {
     stats.currentStreak = 0;
   }
   saveStats(stats, mode);
+};
+
+export const getCareerGameState = () => {
+  const today = new Date();
+  const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}-v5-CareerSalt!`;
+
+  const savedState = localStorage.getItem('varDoDiaCareerGameState');
+  if (savedState) {
+    const parsedState = JSON.parse(savedState);
+    if (parsedState.date === dateString) {
+      return parsedState;
+    }
+  }
+
+  return {
+    date: dateString,
+    guesses: [],
+    gameStatus: 'IN_PROGRESS'
+  };
+};
+
+export const saveCareerGameState = (state) => {
+  localStorage.setItem('varDoDiaCareerGameState', JSON.stringify(state));
+};
+
+export const getCareerStats = () => {
+  const savedStats = localStorage.getItem('varDoDiaCareerStats');
+  if (savedStats) {
+    return JSON.parse(savedStats);
+  }
+  return {
+    played: 0,
+    won: 0,
+    currentStreak: 0,
+    maxStreak: 0
+  };
+};
+
+export const saveCareerStats = (stats) => {
+  localStorage.setItem('varDoDiaCareerStats', JSON.stringify(stats));
+};
+
+export const updateCareerStatsOnEnd = (won) => {
+  const stats = getCareerStats();
+  stats.played += 1;
+  if (won) {
+    stats.won += 1;
+    stats.currentStreak += 1;
+    if (stats.currentStreak > stats.maxStreak) {
+      stats.maxStreak = stats.currentStreak;
+    }
+  } else {
+    stats.currentStreak = 0;
+  }
+  saveCareerStats(stats);
 };
