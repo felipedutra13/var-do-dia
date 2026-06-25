@@ -25,18 +25,26 @@ export default function ShareModal({ status, guesses, maxGuesses, targetPlayer, 
   };
 
   const handleShare = async () => {
-    const classicState = getGameState();
+    const mundialState = getGameState('mundial');
+    const brasileiraoState = getGameState('brasileirao');
     const careerState = getCareerGameState();
 
-    const hasClassic = classicState && classicState.guesses.length > 0;
+    const hasMundial = mundialState && mundialState.guesses.length > 0;
+    const hasBrasileirao = brasileiraoState && brasileiraoState.guesses.length > 0;
     const hasCareer = careerState && careerState.guesses.length > 0;
 
     let textParts = ['Var do Dia'];
 
-    if (hasClassic) {
-      const attempts = classicState.gameStatus === 'WON' ? classicState.guesses.length : 'X';
-      const grid = generateEmojiGrid('classic', classicState.guesses);
-      textParts.push(`\n[Clássico] ${attempts}/6\n${grid}`);
+    if (hasMundial) {
+      const attempts = mundialState.gameStatus === 'WON' ? mundialState.guesses.length : 'X';
+      const grid = generateEmojiGrid('classic', mundialState.guesses);
+      textParts.push(`\n[Mundial] ${attempts}/6\n${grid}`);
+    }
+
+    if (hasBrasileirao) {
+      const attempts = brasileiraoState.gameStatus === 'WON' ? brasileiraoState.guesses.length : 'X';
+      const grid = generateEmojiGrid('classic', brasileiraoState.guesses);
+      textParts.push(`\n[Brasileirão] ${attempts}/6\n${grid}`);
     }
 
     if (hasCareer) {
